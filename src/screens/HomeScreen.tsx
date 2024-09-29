@@ -7,10 +7,15 @@ import {
   SafeAreaView,
 } from "react-native";
 import AirQuality from "../components/AirQuality";
-import { getAirQuality } from "../services/weatherService";
+import {
+  WaterQualityData,
+  getAirQuality,
+  getWaterQuality,
+} from "../services/weatherService";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../types/navigation";
 import { AirQualityData } from "../services/weatherService";
+import WaterQuality from "components/WaterQuality";
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, "Home">;
@@ -20,6 +25,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [airQualityData, setAirQualityData] = useState<AirQualityData | null>(
     null,
   );
+  const [waterQualityData, setWaterQualityData] =
+    useState<WaterQualityData | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = async () => {
@@ -27,6 +34,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const lon = -74.006;
     const data = await getAirQuality(lat, lon);
     setAirQualityData(data);
+    const waterData = await getWaterQuality(lat, lon);
+    setWaterQualityData(waterData);
   };
 
   useEffect(() => {
@@ -57,7 +66,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         <View className="h-4" />
         <Text className="text-lg font-semibold mb-2">Water Quality</Text>
         <View className="bg-blue-100 p-4 rounded-lg">
-          <Text>Water quality data coming soon...</Text>
+          <WaterQuality data={waterQualityData} />
         </View>
       </ScrollView>
     </SafeAreaView>
